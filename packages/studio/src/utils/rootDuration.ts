@@ -1,4 +1,5 @@
 import { formatTimelineAttributeNumber } from "../player/components/timelineEditing";
+import { parseCompositionSource } from "../player/lib/timelineElementHelpers";
 
 /**
  * Matches the opening tag of the ROOT composition element — the first tag that
@@ -33,10 +34,11 @@ const DATA_DURATION_ATTR_RE = /(\bdata-duration\s*=\s*)(["'])[^"']*\2/i;
  * Deterministic and render-safe: DOMParser is the only DOM global used.
  */
 export function readRootCompositionDuration(source: string): number | null {
-  const root = new DOMParser()
-    .parseFromString(source, "text/html")
-    .querySelector("[data-composition-id]");
-  const raw = root?.getAttribute("data-duration");
+  return readDocumentRootDuration(parseCompositionSource(source));
+}
+
+export function readDocumentRootDuration(doc: ParentNode | null | undefined): number | null {
+  const raw = doc?.querySelector("[data-composition-id]")?.getAttribute("data-duration");
   if (raw == null) return null;
   return Number.parseFloat(raw);
 }

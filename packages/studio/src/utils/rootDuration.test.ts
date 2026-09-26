@@ -89,6 +89,11 @@ describe("readRootCompositionDuration", () => {
   it("returns null when the root has no data-duration attribute", () => {
     expect(readRootCompositionDuration(`<div data-composition-id="main"></div>`)).toBeNull();
   });
+
+  it("reads a scene file's root inside its <template>", () => {
+    const scene = `<template><div data-composition-id="scene" data-duration="5"></div></template>`;
+    expect(readRootCompositionDuration(scene)).toBe(5);
+  });
 });
 
 describe("patchRootCompositionDuration", () => {
